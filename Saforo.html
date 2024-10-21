@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saforo</title>
+    <style>
+        #contact {
+            height: 25px;
+            margin-bottom: 5px;
+        }
+
+        body {
+            background-color: rgb(167, 167, 228);
+            text-align: center;
+            color: floralwhite;
+        }
+    </style>
+</head>
+
+<body>
+    <label for="">Recepient Number:</label>
+    <input type="text" id="contact" placeholder="recipient's number"> <br>
+    <label for="">Message to be sent: </label>
+    <textarea name="" id="message" placeholder="message to be sent" cols="30" rows="10"></textarea>
+
+    <br>
+    <input type="submit" value="Submit" onclick='makeCall()'>
+
+    <p id="result"></p>
+    <script>
+
+        function makeCall() {
+            let Contact = document.getElementById("contact").value;
+            let Message = document.getElementById("message").value;
+
+            fetch("https://sms.nalosolutions.com/smsbackend/clientapi/Resl_Nalo/send-message/", {
+                method: "POST",
+
+
+                body: JSON.stringify({
+                    "username": "saforo",
+                    "password": "OUw6Qvz6KulDpyS",
+                    "msisdn": Contact,
+                    "message": Message,
+                    "sender_id": "Test",
+
+                }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+
+            }
+            )
+                .then(function (res) {
+
+                    return res.json();
+                }
+                )
+                .then(function (response) {
+                    document.getElementById("result").innerHTML = JSON.stringify(response);
+
+                }
+                )
+
+        }
+    </script>
+</body>
+
+</html>
