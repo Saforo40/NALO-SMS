@@ -47,12 +47,40 @@
                     "message": Message,
                     "sender_id": "Test",
 
+                    // Send the initial SMS request to the backend
+            fetch('/send-sms/', {
+                method: 'POST',
+                body: formData,
+
                 }),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
+                    //Displaying the first response in the statusBox
+                document.getElementById('statusBox').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                console.log('Initial response received:', data);
 
+                    //Connection to WebSocket to listen for DLR 
+                const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+                const socketUrl = `${protocol}${window.location.host}/ws/dlr-updates/`;
+                const socket = new WebSocket(socketUrl);
+
+                consol.log('Websocket connection opened');
+
+                socket.onmessage = function(event) {
+                    const dlrData = JSON.parse(event.data);
+
+                    //Updating the statusBox with DLR information
+                    const newParagraph = document.createElement('p');
+                    newParagraph.textContent = dlrData.message;
+
+                     // Replace the content of the statusBox with new DLR updates
+                    document.getElementById('statusBox').innerHTML = ''; 
+                    document.getElementById('statusBox').innerHTML = `<pre>${JSON.stringify(dlrData.message, null, 4)}</pre>`;
+
+                    console.log('DLR Update received:', dlrData.message);
+    
             }
             )
                 .then(function (res) {
